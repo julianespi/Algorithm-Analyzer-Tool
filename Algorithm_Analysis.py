@@ -172,6 +172,13 @@ class SortingVisualizer:
         self.entry_array = tk.Entry(frame_input, width=50)
         self.entry_array.pack(side=tk.LEFT, padx=10)
 
+        #search function text box
+        frame_search = tk.Frame(self.master, padx=10, pady=10)
+        frame_search.pack(fill=tk.X)
+        tk.Label(frame_search, text="Enter number to search for:").pack(side=tk.LEFT)
+        self.entry_search_value = tk.Entry(frame_search, width=20)
+        self.entry_search_value.pack(side=tk.LEFT, padx=10)
+
         # Algorithm Selection Frame
         frame_algorithms = tk.Frame(self.master, padx=10, pady=10)
         frame_algorithms.pack(fill=tk.X)
@@ -254,12 +261,20 @@ class SortingVisualizer:
             colors.append("cyan")
             self.sort_tasks.append(("MSD Radix", msd_radix_sort_gen(self.arr.copy())))
         if self.var_linear_search.get():
-            # Choose a random target from the array.
-            target = random.choice(self.arr.copy())
+        #Use user-inputted target instead of random choice
+            target_str = self.entry_search_value.get().strip()
+            if not target_str:
+                messagebox.showerror("Input Error", "Enter a number to search for.")
+                return
+            try:
+                target = int(target_str)
+            except ValueError:
+                messagebox.showerror("Input Error", "Search value must be a valid integer.")
+                return
+
             labels.append(f"LS ({target})")
             colors.append("brown")
             self.sort_tasks.append(("Linear Search", linear_search_gen(self.arr.copy(), target)))
-
         # Reset and set up the plot with one bar per selected process.
         self.ax.clear()
         self.ax.set_title("Real-Time Execution Progress")
